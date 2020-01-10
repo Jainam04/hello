@@ -1,0 +1,71 @@
+<h2>
+
+<div class="full-list">
+<?php echo $block->getMymodule();
+$productCollection = $block->getProductCollection();
+
+ ?>
+
+</h2>
+
+<ul class ="loadmore">
+<?php 
+foreach ($productCollection as $product) {
+	 
+    $sku =  $product->getData('sku');
+    $price = $product->getData('price'); 
+    $image = $product->getData('image');?>  
+     
+     
+     		<li>
+     		<p><?php  echo $sku;?></p>
+     		<p><?php  echo $price;?></p>
+     		<p><img src="http://127.0.0.1/Magento21/pub/media/catalog/product/<?php echo $image; ?>" height = "50" width = "50" /></p>
+     		</li>
+<?php
+}
+
+?>
+</ul>
+
+
+<?php //if ($block->getPagerHtml()): ?>
+    <div class="order-products-toolbar toolbar bottom" style="display: none"><?php echo $block->getPagerHtml(); ?></div>
+<?php //endif ?>
+<a id="viewAll" class="view-more-btn" href="#">View More</a>
+</div>
+
+<script type="text/javascript">
+require(['jquery',
+], function ($) {
+    jQuery(document).ready(function () {
+       
+        jQuery("#viewAll").on("click", function(e) {
+        	
+        	   var value = jQuery('.order-products-toolbar .pages-items li.current').next().children().attr('href');
+     			
+            jQuery.ajax({
+                url: value,
+                method: "POST",
+              
+                success: function (data)
+                {
+                	
+                	var load = jQuery(data).find('.loadmore').html();                  
+                        jQuery(".loadmore").append(load);
+                    jQuery('.pages-items li.current').next().addClass('current next');
+                    jQuery('.pages-items li.current.next').prev().removeClass('current');
+                    
+                }
+            });
+        });
+    });
+});
+</script>
+
+<style type="text/css">
+.full-list p {
+display: none;
+}
+</style>
+
